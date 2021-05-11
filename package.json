@@ -1,0 +1,22 @@
+{
+  "name": "yazata-annunciator-server",
+  "version": "1.0.0",
+  "description": "Annuncitor for ALIND",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ajith",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "querystring": "^0.2.1",
+    "url": "^0.11.0"
+  },
+  "devDependencies": {
+    "serialport": "^9.0.7"
+  }
+}

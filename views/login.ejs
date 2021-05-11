@@ -1,0 +1,70 @@
+
+<link href="/css/style.css" rel="stylesheet" type="text/css">
+ 
+
+  <body>    
+      <img src='/images/logo.jpg' alt="logo"/>
+       <h1 class='text-center'> ANNUNCIATOR CONFIGURATION SOFTWARE </h1>
+      <div  class="main-container">  
+          <form>  
+              <div class="container">   
+                  <label>Username : </label>   
+                  <input type="text" placeholder="Enter Username" id="userName" value="Admin" required>  
+                  <label>Password : </label>   
+                  <input type="password" placeholder="Enter Password" id="password" value="Admin4Annr" required>  
+                  <button type="button" onclick="authenticate()">Login</button>                  
+              </div>   
+          </form>   
+      </div>  
+  </body> 
+  <footer class='text-center' style="margin-top: 2em;">Copyright &#169; ALIND 2021. All rights reserved.</footer>
+  <script>
+      var __username= "Admin";
+      var __pwd= "Admin4Annr";
+      function authenticate(){
+          var username = document.getElementById("userName").value;
+          var pwd = document.getElementById("password").value;
+          if(formValidate(username,pwd)){              
+              if(usernameAndPwdValue(username,pwd)){
+                  sessionStorage.setItem('authenticate','YES');   
+                  location.href = "../settings";
+              }else{
+                  alert('Username and Password is incorrect');
+              }
+  
+          }else{
+              alert('Please enter username and password');
+          }
+      }
+  
+      function  usernameAndPwdValue(username,password){
+          console.log("HELLOOOOOOOOOOOO",username,password);
+          if(username==__username && password ==__pwd){
+              console.log("INSIDE MATCH true");
+              return true;
+          }else{
+              console.log("INSIDE MATCH FALSE");
+              return false;
+          }
+      }
+  
+      function formValidate(username,password){
+         
+          var validationPassed = false;
+          if(username==null || username=='' || username=='undefined'){
+              console.log('INSIDE IF');
+              validationPassed = false;
+  
+          }else if(password==null || password=='' || password=='undefined'){
+              console.log('INSIDE ELSEEE IFF');
+              validationPassed = false;
+          }else{
+              console.log('INSIDE ELSEEE');
+              validationPassed = true;
+  
+          }
+          return validationPassed;
+          
+      }
+  
+  </script>

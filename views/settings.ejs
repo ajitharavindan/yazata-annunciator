@@ -1,0 +1,397 @@
+
+<meta name="viewport" content="width=device-width, initial-scale=1">  
+<title>ANNUNCIATOR CONFIGURATION SOFTWARE</title>   
+<style>   
+    Body {  
+        font-family: Calibri, Helvetica, sans-serif;  
+        background-color: rgb(192, 221, 255);  
+      } 
+      .column {
+        float: left;
+        width: 40%;
+      }
+      
+      /* Clear floats after the columns */
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+
+      * {box-sizing: border-box}
+
+    
+      p {
+        position: relative;
+      }
+      label {
+        width:50%;
+        display: inline-block;
+      }
+      input {
+        
+      }
+
+      select {
+        
+      }
+   
+      .container {   
+        width: 80%; 
+        margin: 0 auto;  
+         
+    }
+    .content-box {
+      background-color: rgb(145, 166, 173); 
+      padding: 15px;
+      margin: 10px;
+    }  
+    .text-center{
+      text-align: center;        
+  }
+    </style>   
+</head>    
+<body>   
+    <div class="container">
+        <img src='images/logo.jpg' alt="logo"/>
+      <div class="row">
+        <div class="column">
+    
+            <div class="content-box">
+                <h3>General Settings</h3>            
+                <hr>
+            
+                <p>
+                  <label for="windowON">Window ON time(Secs)</label>
+                  <input id='windowON' onkeypress="return onlyNumberKey(event)"   type="text"   maxlength="2" ></input>
+                
+                </p>
+                <p>
+                  <label for="windowOFF">Window OFF time(Secs)</label>
+                  <input id='windowOFF' onkeypress="return onlyNumberKey(event)"   type="text"   maxlength="2"></input>
+                </p>
+    
+                <p>
+                  <label for="baudRate">Baud Rate</label>
+                  <input id='baudRate' onkeypress="return onlyNumberKey(event)"   type="text" value="9600"  maxlength="5"></input>
+                </p>
+    
+                <p>
+                  <label for="deviceId">Device ID</label>
+                  <input id='deviceId' onkeypress="return onlyNumberKey(event)"   type="text"   maxlength="3"></input>
+                </p>
+            
+             
+                <button type="button"  onclick="validateAndPostGeneralSettings()">Update</button>
+              </div>
+            
+        </div>
+        <div class="vl"></div>
+        <div class="column">
+    
+            <div class="content-box">
+                <h3>Relay Settings</h3>          
+                <hr>
+            
+                <p>
+                  <label for="alarmrelay">Alarm Relay</label>             
+                  <select name="alarmrelay" id="alarmrelay">
+                    <option value="1">Relay-1</option>
+                    <option value="2">Relay-2</option>
+                    <option value="3">Relay-3</option>
+                  </select>
+                </p>
+                <p>
+                  <label for="triprelay">Trip Relay</label>
+                  <select name="triprelay" id="triprelay">
+                    <option value="1">Relay-1</option>
+                    <option value="2">Relay-2</option>
+                    <option value="3">Relay-3</option>
+                  </select>
+                </p>
+                <p>
+                  <label for="acfailrelay">AC Fail Relay</label>
+                  <select name="acfailrelay" id="acfailrelay">
+                    <option value="1">Relay-1</option>
+                    <option value="2">Relay-2</option>
+                    <option value="3">Relay-3</option>
+                  </select>
+                </p>
+                <p>
+                  <label for="dcfailrelay">DC Fail Relay</label>
+                  <select name="dcfailrelay" id="dcfailrelay">
+                    <option value="1">Relay-1</option>
+                    <option value="2">Relay-2</option>
+                    <option value="3">Relay-3</option>
+                  </select>
+                </p>
+            
+      
+                <button type="button"  onclick="validateAndPostRelaySettings()">Update</button>
+              </div>
+           
+        </div>
+    </div>
+    
+    <div class="row">
+     
+          <div class="column">
+            <div class="content-box">
+              <h3>Delay Settings</h3>          
+              <hr>
+            <p>
+              <label for="alarmdelay">Alarm Delay(Secs)</label>
+              <input id='alarmdelay' onkeypress="return onlyNumberKey(event)"   type="text"   maxlength="2"></input>
+            </p>
+            <p>
+              <label for="tripdelay">Trip Delay(Secs)</label>
+              <input id='tripdelay' onkeypress="return onlyNumberKey(event)"   type="text"   maxlength="2"></input>
+            </p>
+            <p>
+              <label for="acfaildelay">AC Fail(Secs)</label>
+              <input id='acfaildelay' onkeypress="return onlyNumberKey(event)"   type="text"   maxlength="2"></input>
+            </p>
+            <p>
+              <label for="dcfaildelay">DC Fails(Secs)</label>
+              <input id='dcfaildelay' onkeypress="return onlyNumberKey(event)"   type="text"   maxlength="2"></input>
+            </p>
+           
+            <button type="button"  onclick="validateAndPostDelaySettings()">Update</button>
+          </div>
+    
+          </div>
+          <div class="vl"></div>
+    
+        <div class="column">
+          <div class="content-box">
+            <h3>Windows Settings</h3>          
+            <hr>
+          <p>
+            <label for="windowId">Window</label>
+            <input id='windowId' onkeypress="return onlyNumberKey(event)"   type="text"   maxlength="2"></input>
+          </p>
+          <p>
+            <label for="enableId">Enable</label>
+              <select name="enableId" id="enableId">
+                <option value="Y">YES</option>
+                <option value="N">NO</option>
+              </select>
+          </p>
+          <p>
+            <label for="functionId">Function</label>
+          
+            <select name="functionId" id="functionId">
+              <option value="A">Alarm</option>
+              <option value="T">Trip</option>
+            </select>
+          </p>
+          <p>
+      
+          </p>
+         
+            <button type="button"  onclick="validateAndPostWindowsSettings()">Update</button>
+          </div>
+        
+      </div>
+    </div>
+      </div>
+    </body>
+    <footer class='text-center' style="margin-top: 2em;">Copyright &#169; ALIND 2021. All rights reserved.</footer>
+
+<script>
+  var __serverURL ="http://localhost:3000/request?data=";
+  //sessionStorage.setItem('authenticate','YES');  
+  isAuthenticated = sessionStorage.getItem("authenticate");
+ 
+  if(isAuthenticated=="YES"){
+    //alert('User Authenticated');
+  }
+  else{
+    location.href = "/login";
+  }
+
+
+  function onlyNumberKey(evt) {
+          
+    // Only ASCII charactar in that range allowed
+    var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+    if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+        return false;
+    return true;
+}
+
+  function validateAndPostGeneralSettings(){
+    var windowOnVal = document.getElementById("windowON").value;
+    var windowOffVal = document.getElementById("windowOFF").value;
+    var baudRate = document.getElementById("baudRate").value;
+    var deviceId = document.getElementById("deviceId").value;
+
+    var isWinOnValid=false;
+    var isWinOffValid=false;
+    var isDeviceIdValid=false;
+
+   console.log("windowON:-"+windowOnVal);
+   console.log("windowOffVal:-"+windowOffVal);
+   console.log("baudRate:-"+baudRate);
+   console.log("deviceId:-"+deviceId);
+
+    if(windowOnVal && windowOnVal >=0 && windowOnVal<=60){
+      isWinOnValid =true;
+
+    }else{
+      alert("Window ON Value should be between 0 and 60");
+      return false;
+    }
+    if(windowOffVal && windowOffVal >=0 && windowOffVal<=60){
+      isWinOffValid = true;
+
+    }else{
+      alert("Window OFF Value should be between 0 and 60");
+      return false;
+    }
+
+    if(deviceId && deviceId >=1 && deviceId<=255){
+      isDeviceIdValid =true;
+    }else{
+      alert("Device ID Value should be between 1 and 255");
+      return false;
+    }
+    if(isWinOnValid && isWinOffValid && isDeviceIdValid){
+      var validGeneralSettingsPostFormat = "#G#"+windowOnVal+","+windowOffVal+","+baudRate+","+deviceId+"#";
+      postDataToServer(validGeneralSettingsPostFormat);
+    }else{
+      alert("Entered Value for General settings  is incorrect.");
+
+    }
+  }
+
+  function validateAndPostRelaySettings(){
+    var alarmRelayVal = document.getElementById("alarmrelay").value;
+    var tripRelayVal = document.getElementById("triprelay").value;
+    var acFailRelayVal = document.getElementById("acfailrelay").value;
+    var dcFailRelayVal = document.getElementById("dcfailrelay").value;
+
+
+    console.log("windowON:-"+alarmRelayVal);
+    console.log("windowOffVal:-"+tripRelayVal);
+    console.log("baudRate:-"+acFailRelayVal);
+    console.log("deviceId:-"+dcFailRelayVal);
+    var validRelaySettingsPostFormat = "#R#"+alarmRelayVal+","+tripRelayVal+","+acFailRelayVal+","+dcFailRelayVal+"#";
+    postDataToServer(validRelaySettingsPostFormat);
+
+  }
+
+  function validateAndPostDelaySettings(){
+   
+    var alarmDelayVal = document.getElementById("alarmdelay").value;
+    var tripDelayVal = document.getElementById("tripdelay").value;
+    var acFailDelayVal = document.getElementById("acfaildelay").value;
+    var dcFailDelayVal = document.getElementById("dcfaildelay").value;
+
+    var isalarmdelayValid=false;
+    var istripdelayValid=false;
+    var isacfaildelayValid=false;
+    var isdcfaildelayValid=false;
+
+    if(alarmDelayVal && alarmDelayVal >=0 && alarmDelayVal<=60){
+      isalarmdelayValid =true;
+
+    }else{
+      alert("Alarm Delay value should be between 0 and 60");
+      return false;
+    }
+    if(tripDelayVal && tripDelayVal >=0 && tripDelayVal<=60){
+      istripdelayValid = true;
+
+    }else{
+      alert("Trip Delay Value should be between 0 and 60");
+      return false;
+    }
+
+    if(acFailDelayVal && acFailDelayVal >=1 && acFailDelayVal<=60){
+      isacfaildelayValid =true;
+    }else{
+      alert("AC Fail value should be between 1 and 60");
+      return false;
+    }
+
+    if(dcFailDelayVal && dcFailDelayVal >=1 && dcFailDelayVal<=60){
+      isdcfaildelayValid =true;
+    }else{
+      alert("DC Fail value should be between 1 and 60");
+      return false;
+    }
+
+    if(isalarmdelayValid && istripdelayValid &&isacfaildelayValid  && dcFailDelayVal){
+      var validDelaySettingsPostFormat = "#D#"+alarmDelayVal+","+tripDelayVal+","+acFailDelayVal+","+dcFailDelayVal+"#";
+      postDataToServer(validDelaySettingsPostFormat);
+    }else{
+      alert("Entered Value for General settings  is incorrect.");
+
+    }
+
+  }
+
+   
+  function validateAndPostWindowsSettings(){
+
+    var windowIdVal = document.getElementById("windowId").value;
+    var enableIdVal = document.getElementById("enableId").value;
+    var functionIdVal = document.getElementById("functionId").value;
+
+    var iswindowIdValid=false;
+    var isenableIdValid=false;
+    var isfunctionIdValid=false;    
+
+    if(windowIdVal && windowIdVal >=0 && windowIdVal<=60){
+      iswindowIdValid =true;
+
+    }else{
+      alert("Window  value should be between 0 and 60");
+      return false;
+    }
+
+    if(iswindowIdValid ){
+    
+      var validWindowsSettingsPostFormat = "#W#"+windowIdVal+","+enableIdVal+","+functionIdVal+"#";
+      postDataToServer(validWindowsSettingsPostFormat);
+    }else{
+      alert("Entered Value for Window settings  is incorrect.");
+
+    }
+    /*if(enableIdVal && enableIdVal >=0 && enableIdVal<=60){
+      isenableIdValid = true;
+
+    }else{
+      alert("Enable Value should be between 0 and 60");
+      return false;
+    }
+
+    if(functionIdVal && functionIdVal >=1 && functionIdVal<=60){
+      isfunctionIdValid =true;
+    }else{
+      alert("Function value should be between 1 and 60");
+      return false;
+    }*/
+    
+  }
+
+
+
+  function postDataToServer(reqData) { 
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {     
+        alert('DATA send to Server');
+      }
+    };
+    var encoded = encodeURIComponent(reqData);
+    var serverURLwithparam=__serverURL+''+encoded;
+    xhttp.open("GET", serverURLwithparam, true);
+    xhttp.setRequestHeader('Content-type', 'text/html');
+    xhttp.send();
+  }
+
+</script>
+
+</html>
