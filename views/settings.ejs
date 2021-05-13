@@ -1,6 +1,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">  
 <title>ANNUNCIATOR CONFIGURATION SOFTWARE</title>   
+<script src="scripts/jquery-3.6.0.min.js"></script>
+<script src="scripts/jquery-ui.min.js"></script>
+<link href="/css/jquery-ui.min.css" rel="stylesheet" type="text/css">
+
 <style>   
     Body {  
         font-family: Calibri, Helvetica, sans-serif;  
@@ -8,7 +12,7 @@
       } 
       .column {
         float: left;
-        width: 40%;
+        width: 33%;
       }
       
       /* Clear floats after the columns */
@@ -37,7 +41,7 @@
       }
    
       .container {   
-        width: 80%; 
+        width: 100%; 
         margin: 0 auto;  
          
     }
@@ -70,19 +74,31 @@
                   <label for="windowOFF">Window OFF time(Secs)</label>
                   <input id='windowOFF' onkeypress="return onlyNumberKey(event)"   type="text"   maxlength="2"></input>
                 </p>
+
+                <p>
+                  <label for="numWindows">Number of Windows</label>
+                  <input id='numWindows' onkeypress="return onlyNumberKey(event)"   type="text"   maxlength="2"></input>
+                </p>
+
+                <p>
+                  <label for="modbusEnabled">Modbus Enabled</label>             
+                  <select name="modbusEnabled" id="modbusEnabled" onchange="modbusEnableEvent(this.value)">
+                    <option value="Y">YES</option>
+                    <option value="N">NO</option>                    
+                  </select>
+                </p>
     
                 <p>
                   <label for="baudRate">Baud Rate</label>
-                  <input id='baudRate' onkeypress="return onlyNumberKey(event)"   type="text" value="9600"  maxlength="5"></input>
+                  <input id='baudRate' onkeypress="return onlyNumberKey(event)"  disabled='true' type="text" value="9600"  maxlength="5"></input>
                 </p>
     
                 <p>
                   <label for="deviceId">Device ID</label>
                   <input id='deviceId' onkeypress="return onlyNumberKey(event)"   type="text"   maxlength="3"></input>
                 </p>
-            
-             
                 <button type="button"  onclick="validateAndPostGeneralSettings()">Update</button>
+                <button style="float: right;" type="button"  onclick="showWindowSettings()">Window</button>
               </div>
             
         </div>
@@ -131,9 +147,47 @@
               </div>
            
         </div>
+
+        <div class="column">
+          <div class="content-box">
+            <h3>Delay Settings</h3>          
+            <hr>
+          <p>
+            <label for="alarmdelay">Alarm Delay(Secs)</label>
+            <input id='alarmdelay' onkeypress="return onlyNumberKey(event)"   type="text"   maxlength="2"></input>
+          </p>
+          <p>
+            <label for="tripdelay">Trip Delay(Secs)</label>
+            <input id='tripdelay' onkeypress="return onlyNumberKey(event)"   type="text"   maxlength="2"></input>
+          </p>
+          <p>
+            <label for="acfaildelay">AC Fail(Secs)</label>
+            <input id='acfaildelay' onkeypress="return onlyNumberKey(event)"   type="text"   maxlength="2"></input>
+          </p>
+          <p>
+            <label for="dcfaildelay">DC Fails(Secs)</label>
+            <input id='dcfaildelay' onkeypress="return onlyNumberKey(event)"   type="text"   maxlength="2"></input>
+          </p>
+         
+          <button type="button"  onclick="validateAndPostDelaySettings()">Update</button>
+        </div>
+  
+        </div>
+
+
+    </div>
+
+    <div id="dialog" title="Window Settings" >
+      <div>
+        <table id='windowMainTable' style="border: none;"><tr><td id='winMnTbcol1'></td><td id='winMnTbcol2'></td><td id='winMnTbcol3'></td>
+          <td id='winMnTbcol4'></td><td id='winMnTbcol5'></td><td id='winMnTbcol6'></td><td id='winMnTbcol7'></td> <td id='winMnTbcol8'></td>
+        </tr></table>
+      <table id='windowTable'></table>
+      <button type="button" id='windowUpdateid' style="display: none;"  onclick="validateAndPostWindowsSettings()">Update</button>
+    </div>
     </div>
     
-    <div class="row">
+    <!--<div class="row">
      
           <div class="column">
             <div class="content-box">
@@ -162,7 +216,7 @@
           </div>
           <div class="vl"></div>
     
-        <div class="column">
+        <div class="column" style="display: none;">
           <div class="content-box">
             <h3>Windows Settings</h3>          
             <hr>
@@ -193,13 +247,14 @@
           </div>
         
       </div>
-    </div>
+    </div>-->
       </div>
     </body>
     <footer class='text-center' style="margin-top: 2em;">Copyright &#169; ALIND 2021. All rights reserved.</footer>
 
 <script>
   var __serverURL ="http://localhost:3000/request?data=";
+  var __windowsettingindex=0;
   //sessionStorage.setItem('authenticate','YES');  
   isAuthenticated = sessionStorage.getItem("authenticate");
  
@@ -220,14 +275,27 @@
     return true;
 }
 
+function modbusEnableEvent(val){
+  var baudRateElement = document.getElementById("baudRate");  
+  if(val=="Y"){
+    baudRateElement.value = 9600;
+  }else{
+    baudRateElement.value = '';
+  }
+}
+
   function validateAndPostGeneralSettings(){
     var windowOnVal = document.getElementById("windowON").value;
     var windowOffVal = document.getElementById("windowOFF").value;
     var baudRate = document.getElementById("baudRate").value;
     var deviceId = document.getElementById("deviceId").value;
 
+    var numWindows = document.getElementById("numWindows").value;
+    var modbusEnabled = document.getElementById("modbusEnabled").value;
+
     var isWinOnValid=false;
     var isWinOffValid=false;
+    var isNumWindowsValid=false;
     var isDeviceIdValid=false;
 
    console.log("windowON:-"+windowOnVal);
@@ -250,13 +318,21 @@
       return false;
     }
 
+    if(isNumWindowsValid && isNumWindowsValid >=0 && windisNumWindowsValidowOffVal<=32){
+      isNumWindowsValid = true;
+
+    }else{
+      alert("Number of window Value should be between 0 and 32");
+      return false;
+    }
+
     if(deviceId && deviceId >=1 && deviceId<=255){
       isDeviceIdValid =true;
     }else{
       alert("Device ID Value should be between 1 and 255");
       return false;
     }
-    if(isWinOnValid && isWinOffValid && isDeviceIdValid){
+    if(isWinOnValid && isWinOffValid && isNumWindowsValid && isDeviceIdValid){
       var validGeneralSettingsPostFormat = "#G#"+windowOnVal+","+windowOffVal+","+baudRate+","+deviceId+"#";
       postDataToServer(validGeneralSettingsPostFormat);
     }else{
@@ -332,8 +408,17 @@
 
   }
 
+  function validateAndPostWindowsSettings(){    
+    var numWindows = document.getElementById("numWindows").value;
+    var windowSettingData= "#w#";
+    for(var k=0;k<numWindows;k++){
+      var windowfunctionValue = document.getElementById("functionId_"+k).value;
+      windowSettingData=windowSettingData+(k+1)+','+windowfunctionValue+'#';
+    }
+    postDataToServer(windowSettingData);
+  }
    
-  function validateAndPostWindowsSettings(){
+  function validateAndPostWindowsSettings_old(){
 
     var windowIdVal = document.getElementById("windowId").value;
     var enableIdVal = document.getElementById("enableId").value;
@@ -376,13 +461,115 @@
     
   }
 
+  function showWindowSettings(){  
+    var numWindows = document.getElementById("numWindows").value;   
+    if(numWindows!='' && (numWindows>0 && numWindows<=32)){  
+      $("#winMnTbcol1").empty();
+      $("#winMnTbcol2").empty();
+      $("#winMnTbcol3").empty();
+      $("#winMnTbcol4").empty();
+      $("#winMnTbcol5").empty();
+      $("#winMnTbcol6").empty();
+      $("#winMnTbcol7").empty();
+      $("#winMnTbcol8").empty();      
+      addWindowsDynamically(numWindows);
+      $('#windowUpdateid').show();
+      var dialogOptions={
+        minHeight: 500,
+        width:1000,
+      
+      }
+      $( "#dialog" ).dialog(dialogOptions);
+      __windowsettingindex=0;
+    }else{
+      alert('Number of window should be between 1 and 32');
+    }
+  }
+
+  function addRowstoTbColumn(colId,rowCount){
+    var windowTable = $('#winMnTbcol'+colId);
+    
+    for (var i = 1; i <= rowCount; i++) {
+      let row = $("<tr id='winrow_"+i+"'></tr>");
+     
+        var trd ="<td>";
+          trd+=" <div class='content-box'><label for='functionId_"+__windowsettingindex+"'>Function</label><select name='functionId_"+__windowsettingindex+"' id='functionId_"+__windowsettingindex+"'><option value='A'>Alarm</option><option value='T'>Trip</option></select></div>"
+          trd+="</td>";
+        row.append(trd);
+      
+      windowTable.append(row);
+      __windowsettingindex++;
+     }
+  }
+
+  function addWindowsDynamically(numOfWindow){
+    numOfRow =4;
+    numOfCol = 8;
+    windowLimitNumber=32;    
+    if(numOfWindow<=4){
+      addRowstoTbColumn(1,numOfWindow);
+    }
+    else if(numOfWindow>4 && numOfWindow<=8){
+      addRowstoTbColumn(1,numOfRow);
+      addRowstoTbColumn(2,numOfWindow-numOfRow);
+    }
+    
+    else if(numOfWindow>8 && numOfWindow<=12){
+      addRowstoTbColumn(1,numOfRow);
+      addRowstoTbColumn(2,numOfRow);
+      addRowstoTbColumn(3,numOfWindow-8);
+    }
+    else if(numOfWindow>12 && numOfWindow<=16){
+      addRowstoTbColumn(1,numOfRow);
+      addRowstoTbColumn(2,numOfRow);
+      addRowstoTbColumn(3,numOfRow);
+      addRowstoTbColumn(4,numOfWindow-12);
+    }
+    else if( numOfWindow>16 && numOfWindow<=20){
+      addRowstoTbColumn(1,numOfRow);
+      addRowstoTbColumn(2,numOfRow);
+      addRowstoTbColumn(3,numOfRow);
+      addRowstoTbColumn(4,numOfRow);
+      addRowstoTbColumn(5,numOfWindow-16);
+    }
+    else if(numOfWindow>20 && numOfWindow<=24){
+      addRowstoTbColumn(1,numOfRow);
+      addRowstoTbColumn(2,numOfRow);
+      addRowstoTbColumn(3,numOfRow);
+      addRowstoTbColumn(4,numOfRow);
+      addRowstoTbColumn(5,numOfRow);
+      addRowstoTbColumn(6,numOfWindow-20);
+    }
+    else if(numOfWindow>24 && numOfWindow<=28){
+      addRowstoTbColumn(1,numOfRow);
+      addRowstoTbColumn(2,numOfRow);
+      addRowstoTbColumn(3,numOfRow);
+      addRowstoTbColumn(4,numOfRow);
+      addRowstoTbColumn(5,numOfRow);
+      addRowstoTbColumn(6,numOfRow);
+      addRowstoTbColumn(7,numOfWindow-24);
+    }
+    else if(numOfWindow>28 && numOfWindow<=32){
+      addRowstoTbColumn(1,numOfRow);
+      addRowstoTbColumn(2,numOfRow);
+      addRowstoTbColumn(3,numOfRow);
+      addRowstoTbColumn(4,numOfRow);
+      addRowstoTbColumn(5,numOfRow);
+      addRowstoTbColumn(6,numOfRow);
+      addRowstoTbColumn(7,numOfRow);
+      addRowstoTbColumn(8,numOfWindow-28);
+    }
+
+   
+  }
+
 
 
   function postDataToServer(reqData) { 
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {     
-        alert('DATA send to Server');
+        alert('Data send to server');
       }
     };
     var encoded = encodeURIComponent(reqData);
