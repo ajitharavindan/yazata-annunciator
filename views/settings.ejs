@@ -52,12 +52,32 @@
     }  
     .text-center{
       text-align: center;        
-  }
-    </style>   
+    }
+
+    .fg-button {
+      outline: 0;
+      margin:0 4px 0 0;
+      padding: .4em 1em;
+      text-decoration:none !important;
+      cursor:pointer;
+      position: relative;
+      text-align: center;
+      border-radius: 12px;
+      text-align: center;
+      text-transform: uppercase;
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 24px 0 rgba(0,0,0,0.19);
+      zoom: 1;
+      background-image: linear-gradient(to right, #77A1D3 0%, #79CBCA  51%, #77A1D3  100%)
+      }
+
+     </style>   
 </head>    
 <body>   
     <div class="container">
-        <img src='images/logo.jpg' alt="logo"/>
+      <span>
+        <img src='images/logo.png' alt="logo"/>
+        <h3 style="float: right;cursor: pointer;margin-right: 4em;" onclick="logout()">Logout</h4>
+      </span>
       <div class="row">
         <div class="column">
     
@@ -97,8 +117,8 @@
                   <label for="deviceId">Device ID</label>
                   <input id='deviceId' onkeypress="return onlyNumberKey(event)"   type="text"   maxlength="3"></input>
                 </p>
-                <button type="button"  onclick="validateAndPostGeneralSettings()">Update</button>
-                <button style="float: right;" type="button"  onclick="showWindowSettings()">Window</button>
+                <button class="fg-button" type="button"  onclick="validateAndPostGeneralSettings()">Update</button>
+                <button class="fg-button" style="float: right;" type="button"  onclick="showWindowSettings()">Window</button>
               </div>
             
         </div>
@@ -143,7 +163,7 @@
                 </p>
             
       
-                <button type="button"  onclick="validateAndPostRelaySettings()">Update</button>
+                <button class="fg-button" type="button"  onclick="validateAndPostRelaySettings()">Update</button>
               </div>
            
         </div>
@@ -169,7 +189,7 @@
             <input id='dcfaildelay' onkeypress="return onlyNumberKey(event)"   type="text"   maxlength="2"></input>
           </p>
          
-          <button type="button"  onclick="validateAndPostDelaySettings()">Update</button>
+          <button class="fg-button" type="button"  onclick="validateAndPostDelaySettings()">Update</button>
         </div>
   
         </div>
@@ -183,7 +203,7 @@
           <td id='winMnTbcol4'></td><td id='winMnTbcol5'></td><td id='winMnTbcol6'></td><td id='winMnTbcol7'></td> <td id='winMnTbcol8'></td>
         </tr></table>
       <table id='windowTable'></table>
-      <button type="button" id='windowUpdateid' style="display: none;"  onclick="validateAndPostWindowsSettings()">Update</button>
+      <button type="button" id='windowUpdateid' class="fg-button" style="display: none;"  onclick="validateAndPostWindowsSettings()">Update</button>
     </div>
     </div>
     
@@ -265,6 +285,11 @@
     location.href = "/login";
   }
 
+  function logout(){
+    sessionStorage.removeItem("authenticate");
+    location.href = "/login";
+
+  }
 
   function onlyNumberKey(evt) {
           
@@ -277,10 +302,14 @@
 
 function modbusEnableEvent(val){
   var baudRateElement = document.getElementById("baudRate");  
+  var deviceIdElement = document.getElementById("deviceId");
   if(val=="Y"){
     baudRateElement.value = 9600;
+    deviceIdElement.disabled=false;
   }else{
     baudRateElement.value = '';
+    deviceIdElement.value='';
+    deviceIdElement.disabled=true;
   }
 }
 
